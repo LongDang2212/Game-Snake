@@ -44,31 +44,34 @@ void gameEvent::saveHighScore(QString playerName)
 }
 void gameEvent::localeFood()
 {
-    bool flag1 = false;
-    coordinate temp1(0, 0);
+    coordinate temp1(0, 0); // biến tạm, chứa vị trí mồi mới
+    bool flag1 = false; // đặt 1 cờ, thể hiện sự hợp lệ của vị trí mồi
     do {
+        // đặt mồi ở vị trí ngẫu nhiên
         temp1 = coordinate(randomNumber(1, int(Width / 10) - 1) * 10, randomNumber(1, int(Height / 10) - 1) * 10);
-        flag1 = true;
+        flag1 = true;   // thay đổi cờ thành đúng
         QVector<coordinate> temp2 = snakePtr->getSnakeCoordinateVector();
+        // kiểm tra xem nếu mồi trùng với rắn thì đặt cờ là sai
 #pragma omp parallel for
         for (int i = 0; i < temp2.size(); i++) {
             if (isSameCoordinate(temp1, temp2.at(i))) {
                 flag1 = false;
             }
         }
-    } while (!flag1);
-    this->foodCoordinate = temp1;
+    } while (!flag1);   // vòng lặp sẽ chạy đến khi cờ đúng, vị trí mồi hợp lệ
+    this->foodCoordinate = temp1;   // cập nhật vị trí mồi
 }
 void gameEvent::eat()
 {
-
+    // nếu cờ phần thưởng đúng thì +50 điểm, sai thì +10
     if (isGift) {
         score += 50;
     }
     else {
         score += 10;
     }
-    snakePtr->eat();
+    snakePtr->eat();    // rắn ăn mồi, dài ra
+    // xác định cờ phần thưởng, cứ 5 lần ăn mồi thường sẽ có thưởng
     isGift = ((snakePtr->getSnakeCoordinateVector().size() - 3) % 5 == 0) ? true : false;
     localeFood();
 }
@@ -133,7 +136,7 @@ void gameEvent::move()
 void gameEvent::checkCollision()
 {
     QVector<coordinate> temp = snakePtr->getSnakeCoordinateVector();
-// check if snake bit itself
+// kiểm tra xem rắn có tự cắn mình
 #pragma omp parallel for
     for (int i = 1; i < temp.size(); i++) {
 
@@ -141,7 +144,7 @@ void gameEvent::checkCollision()
             inGame = false;
         }
     }
-// check if snake go through the wall
+// kiểm tra nếu rắn đi xuyên tường
 #pragma omp parallel
 {
     if (temp.at(0).x >= Width) {
@@ -160,13 +163,15 @@ void gameEvent::checkCollision()
         snakePtr->setHeadCoordinate(coordinate(temp.at(0).x, Height));
     }
 }
-    //check if snake eat
+    // kiểm tra xem rắn có ăn mồi
     if (isSameCoordinate(temp.at(0), foodCoordinate)) {
         this->eat();
     }
 }
 void gameEvent::loop()
 {
+    // cờ pause thể hiện game có tạm dừng hay không
+    // cờ inGame thể hiện game vẫn diễn ra hay đã kết thúc
     if (!pause) {
         if (inGame) {
 
@@ -174,10 +179,11 @@ void gameEvent::loop()
 
             move();
             checkCollision();
+            // hàm update sẽ cập nhật đồ hoạ
             update();
         }
-        else {
-            if (flag) {
+        else {  // nếu game đã kết thúc
+            if (flag) { // cờ flag dùng để xác định trạng thái tên người chơi
                 QString name = getPlayerName();
                 saveHighScore(name);
             }

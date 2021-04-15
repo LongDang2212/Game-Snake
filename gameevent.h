@@ -14,6 +14,7 @@
 #include<QDir>
 #include<QLine>
 
+// class sự kiện game
 class gameEvent : public QWidget {
     Q_OBJECT
 private:
@@ -22,7 +23,6 @@ private:
     coordinate foodCoordinate = coordinate(0, 0);
     bool isGift = false, inGame = false, flag = true, pause = false;
     QTimer* timer1 = new QTimer(this);
-    QTimer* timer2 = new QTimer(this);
     const int SPEED = 100;
     const QString savedGamePath = "highScores.txt";
 
