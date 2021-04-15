@@ -10,6 +10,7 @@ gameEvent::gameEvent(snake* ptr)
     setBaseSize(Width, Height);
     setFixedSize(Width, Height);
 }
+
 int gameEvent::getScore()
 {
     return score;

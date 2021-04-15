@@ -27,20 +27,33 @@ private:
     const QString savedGamePath = "highScores.txt";
 
 public:
+    // hàm khởi tạo
     gameEvent(snake*);
+    // hàm di chuyển rắn
     void move();
+    // hàm kiểm tra va chạm, đi xuyên tường,...
     void checkCollision();
+    // hàm ăn mồi
     void eat();
+    // hàm trả về điểm của người chơi
     int getScore();
+    // hàm đặt số điểm người chơi
     void setScore(int);
+    // hàm đặt vị trí mồi (ngẫu nhiên)
     void localeFood();
+    // hàm lưu điểm cao
     void saveHighScore(QString);
+    // hàm lấy tên người chơi
     QString getPlayerName();
 protected:
+    // hàm thực hiện tác vụ đồ hoạ
     void paintEvent(QPaintEvent*);
+    // hàm bắt các thao tác với bàn phím
     void keyPressEvent(QKeyEvent*);
 public slots:
+    // hàm khởi tạo trò chơi mới
     void init();
+    // vòng lặp game
     void loop();
 };
 
